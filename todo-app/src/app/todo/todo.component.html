@@ -1,20 +1,37 @@
 <div class="max-w-lg mx-auto mt-10 p-4 bg-white rounded-lg shadow-lg">
-  <h2 class="text-2xl font-bold text-center mb-4">Lista de afazeres</h2>
+  <h2 class="text-2xl font-bold text-center mb-4">To-Do List</h2>
+  <div class="mb-4">
+    <label for="category-filter" class="block mb-2">Filtrar por Categoria</label>
+    <select id="category-filter" [(ngModel)]="filterCategory" class="w-full border rounded p-2">
+      <option value="">Todas</option>
+      <option *ngFor="let category of categories" [value]="category">{{ category }}</option>
+    </select>
+  </div>
   <ul class="space-y-2">
-    <li *ngFor="let task of tasks" class="flex items-center justify-between p-2 bg-gray-100 rounded">
+    <li *ngFor="let task of tasks | filterCategory: filterCategory" class="flex items-center justify-between p-2 bg-gray-100 rounded">
       <div class="flex-1">
-        <span *ngIf="editTaskId !== task.id" class="text-lg">{{ task.name }}</span>
-        <input *ngIf="editTaskId === task.id" [(ngModel)]="editTaskName" class="border rounded p-1 w-full">
+        <span *ngIf="editTaskId !== task.id">{{ task.name }} - {{ task.category }}</span>
+        <div *ngIf="editTaskId === task.id" class="flex space-x-2">
+          <input [(ngModel)]="editTaskName" class="border rounded p-1 w-full">
+          <select [(ngModel)]="editTaskCategory" class="border rounded p-1">
+            <option value="">Selecione uma categoria</option>
+            <option *ngFor="let category of categories" [value]="category">{{ category }}</option>
+          </select>
+        </div>
       </div>
       <div class="flex space-x-2">
-        <button *ngIf="editTaskId !== task.id" (click)="editTask(task)" class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-700">Editar</button>
-        <button *ngIf="editTaskId === task.id" (click)="updateTask()" class="bg-green-500 text-white px-2 py-1 rounded hover:bg-green-700">Atualizar</button>
-        <button (click)="removeTask(task.id)" class="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-700">Remover</button>
+        <button *ngIf="editTaskId !== task.id" (click)="editTask(task)" class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-700">Edit</button>
+        <button *ngIf="editTaskId === task.id" (click)="updateTask()" class="bg-green-500 text-white px-2 py-1 rounded hover:bg-green-700">Update</button>
+        <button (click)="removeTask(task.id)" class="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-700">Remove</button>
       </div>
     </li>
   </ul>
-  <div class="mt-4 flex">
-    <input [(ngModel)]="newTask" placeholder="Adicionar nova tarefa" class="flex-1 border rounded p-2 mr-2">
-    <button (click)="addTask()" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700">Adicionar tarefa</button>
+  <div class="mt-4 flex flex-col space-y-2">
+    <input [(ngModel)]="newTask" placeholder="Add new task" class="border rounded p-2">
+    <select [(ngModel)]="newTaskCategory" class="border rounded p-2">
+      <option value="">Selecione uma categoria</option>
+      <option *ngFor="let category of categories" [value]="category">{{ category }}</option>
+    </select>
+    <button (click)="addTask()" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700">Add Task</button>
   </div>
 </div>
